@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ganapathy Festival — Unity in Tradition</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="images/ganesha-small.png" alt="Ganesha" onerror="this.style.display='none'"/>
+      <div>
+        <h1>Ganapathy Festival</h1>
+        <small class="subtitle">Unity in Tradition</small>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div id="welcomeText" class="muted">Not signed in</div>
+      <button id="btnTheme" class="btn small ghost">Dark</button>
+      <button id="btnLogout" class="btn small warn hidden">Logout</button>
+    </div>
+  </header>
+
+  <nav id="mainNav" class="main-nav">
+    <!-- links injected -->
+  </nav>
+
+  <main class="container">
+    <!-- LOGIN -->
+    <section id="page-login" class="page active">
+      <div class="card auth-card">
+        <h2>Sign in to Ganapathy Festival</h2>
+        <p class="muted">Test accounts: super@fest.com / 12345 (Super Admin)</p>
+        <input id="loginEmail" placeholder="email" />
+        <input id="loginPass" placeholder="password" type="password" />
+        <div class="row">
+          <button id="btnLogin" class="btn primary">Login</button>
+          <button id="btnGuest" class="btn ghost">Continue as Guest</button>
+        </div>
+        <p id="loginError" class="error"></p>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="page-dashboard" class="page hidden">
+      <div class="grid-2">
+        <div class="card hero">
+          <h2>Festival Dashboard</h2>
+          <p class="muted">Welcome to Ganapathy Festival — Unity in Tradition</p>
+          <div class="row wrap">
+            <div class="metric">
+              <canvas id="donationCircle" width="120" height="120"></canvas>
+              <div class="metric-label">Donations</div>
+            </div>
+            <div class="metric">
+              <canvas id="usersCircle" width="120" height="120"></canvas>
+              <div class="metric-label">Active Users</div>
+            </div>
+            <div class="metric">
+              <canvas id="prayersCircle" width="120" height="120"></canvas>
+              <div class="metric-label">Prayers Read</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Upcoming Festival</h3>
+          <div id="countdown" class="countdown"></div>
+          <small class="muted">Next event: <span id="nextEventName">Ganesh Chaturthi</span></small>
+          <div class="spacer"></div>
+          <h4>Quick Actions</h4>
+          <div class="quick-links">
+            <a href="#" data-link="page-aarti" class="tile">Aarti Library</a>
+            <a href="#" data-link="page-events" class="tile">Event Schedule</a>
+            <a href="#" data-link="page-donations" class="tile">Donations</a>
+            <a href="#" data-link="page-gallery" class="tile">Gallery</a>
+            <a href="#" data-link="page-finances" class="tile">Income / Expenses</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AARTI -->
+    <section id="page-aarti" class="page hidden">
+      <div class="card">
+        <h2>Aarti & Chalisa Library</h2>
+        <div id="aartiList" class="list-cards"></div>
+        <div id="playerCard" class="card hidden">
+          <h4 id="playerTitle">Aarti Title</h4>
+          <audio id="audioPlayer" controls></audio>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENTS -->
+    <section id="page-events" class="page hidden">
+      <div class="card">
+        <h2>Event Schedule</h2>
+        <div id="eventsList" class="list-cards"></div>
+        <div class="muted">Admins can add events (simulated).</div>
+        <div id="eventForm" class="muted hidden">
+          <input id="evName" placeholder="Event Name" />
+          <input id="evDate" type="datetime-local" />
+          <button class="btn" onclick="addEvent()">Add Event</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="page-gallery" class="page hidden">
+      <div class="card">
+        <h2>Gallery Upload (local preview)</h2>
+        <input id="galleryFile" type="file" accept="image/*" />
+        <div id="galleryPreview" class="gallery-grid"></div>
+      </div>
+    </section>
+
+    <!-- DONATIONS -->
+    <section id="page-donations" class="page hidden">
+      <div class="card">
+        <h2>Donations</h2>
+        <div class="donation-grid">
+          <div class="card small">
+            <h4>UPI</h4>
+            <div class="upibox"><input id="upiBox" readonly value="ganapathy@upi" /><button onclick="copyToClipboard('upiBox')" class="btn">Copy</button></div>
+          </div>
+          <div class="card small">
+            <h4>QR (placeholder)</h4>
+            <svg width="120" height="120"><rect width="120" height="120" fill="#eee"/></svg>
+          </div>
+          <div class="card small">
+            <h4>PayPal</h4>
+            <button class="btn" onclick="alert('Redirect to PayPal (demo)')">PayPal Donate</button>
+          </div>
+        </div>
+
+        <h3 class="muted">Top Donations</h3>
+        <ol id="donationList"></ol>
+
+        <div class="muted">Simulate donation:</div>
+        <input id="donorName" placeholder="Name" /><input id="donorAmount" type="number" placeholder="Amount" />
+        <button class="btn" onclick="simulateDonation()">Simulate Donate</button>
+      </div>
+    </section>
+
+    <!-- FINANCES -->
+    <section id="page-finances" class="page hidden">
+      <div class="card">
+        <h2>Income & Expenses</h2>
+        <div class="row gap">
+          <div>
+            <h4>Total Income</h4>
+            <div id="totalIncome" class="big-figure">₹0</div>
+          </div>
+          <div>
+            <h4>Total Expenses</h4>
+            <div id="totalExpenses" class="big-figure">₹0</div>
+          </div>
+          <div>
+            <h4>Balance</h4>
+            <div id="balance" class="big-figure">₹0</div>
+          </div>
+        </div>
+
+        <h4>Transactions</h4>
+        <div id="txnList" class="list-cards"></div>
+
+        <h4 class="muted">Add transaction (admin)</h4>
+        <div id="txnForm" class="muted hidden">
+          <input id="txnTitle" placeholder="Title" /><input id="txnAmt" type="number" placeholder="Amount" />
+          <select id="txnType"><option value="income">Income</option><option value="expense">Expense</option></select>
+          <button class="btn" onclick="addTxn()">Add</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VOLUNTEERS -->
+    <section id="page-volunteers" class="page hidden">
+      <div class="card">
+        <h2>Volunteer Sign-up</h2>
+        <input id="volName" placeholder="Full name" />
+        <input id="volPhone" placeholder="Phone" />
+        <button class="btn" onclick="volunteerSignup()">Sign up</button>
+
+        <h4>Volunteer list</h4>
+        <ul id="volList" class="list-cards"></ul>
+      </div>
+    </section>
+
+    <!-- STORE -->
+    <section id="page-store" class="page hidden">
+      <div class="card">
+        <h2>Merchandise Store</h2>
+        <div id="storeList" class="store-grid"></div>
+        <h4>Cart</h4>
+        <div id="cartList"></div>
+      </div>
+    </section>
+
+    <!-- CONTACTS -->
+    <section id="page-contacts" class="page hidden">
+      <div class="card">
+        <h2>Emergency Contacts</h2>
+        <ul id="contactsList" class="list-cards"></ul>
+      </div>
+    </section>
+
+    <!-- CHECKLIST -->
+    <section id="page-checklist" class="page hidden">
+      <div class="card">
+        <h2>Festival Checklist</h2>
+        <ul id="checklist" class="list-cards"></ul>
+        <input id="checkText" placeholder="Add checklist item" />
+        <button class="btn" onclick="addChecklist()">Add</button>
+      </div>
+    </section>
+
+    <!-- SUGGESTIONS / CHAT (mock) -->
+    <section id="page-suggestions" class="page hidden">
+      <div class="card">
+        <h2>Suggestions & Chat (mock)</h2>
+        <textarea id="suggestText" placeholder="Write suggestion..."></textarea>
+        <button class="btn" onclick="addSuggestion()">Send</button>
+        <div id="suggestionsList" class="list-cards"></div>
+      </div>
+    </section>
+
+    <!-- ADMIN PANEL -->
+    <section id="page-admin" class="page hidden">
+      <div class="card">
+        <h2>Admin Panel</h2>
+        <div class="muted">Manage content & events.</div>
+        <div id="adminActions" class="list-cards">
+          <div class="list-card"><div><strong>Events</strong></div><div><button class="btn" onclick="showPage('page-events')">Open</button></div></div>
+          <div class="list-card"><div><strong>Donations</strong></div><div><button class="btn" onclick="showPage('page-donations')">Open</button></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUPERADMIN PANEL -->
+    <section id="page-superadmin" class="page hidden">
+      <div class="card">
+        <h2>Super Admin Console</h2>
+        <p class="muted">You can add/remove admins & members.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Admins</h3>
+            <ul id="adminMgmt" class="list-cards"></ul>
+            <input id="newAdminEmail" placeholder="admin email" />
+            <input id="newAdminPass" placeholder="password" />
+            <button class="btn" onclick="createAdmin()">Create Admin</button>
+          </div>
+
+          <div class="card">
+            <h3>Members</h3>
+            <ul id="memberMgmt" class="list-cards"></ul>
+            <input id="newMemberEmail" placeholder="member email" />
+            <input id="newMemberPass" placeholder="password" />
+            <button class="btn" onclick="createMember()">Create Member</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="muted center">Ganapathy Festival — Unity in Tradition © <span id="year"></span></footer>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
